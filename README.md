@@ -1,12 +1,31 @@
-## Amazon EKS Kubernetes API from AWS Lambda
+## Based on Original Work
 
-Access the Kubernetes API from a Lambda function entirely in code.  This is the source code for the blog article [A Container-Free Way to Configure Kubernetes Using AWS Lambda]( https://aws.amazon.com/blogs/opensource/a-container-free-way-to-configure-kubernetes-using-aws-lambda/).
+This project is based on the [amazon-eks-kubernetes-api-aws-lambda](https://github.com/aws-samples/amazon-eks-kubernetes-api-aws-lambda) sample by AWS.
 
-## Security
+### 🔧 Modifications include:
 
-See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
+## 1. AWS Profile Selection
 
-## License
+The deployment script now prompts:
 
-This library is licensed under the MIT-0 License. See the LICENSE file.
+> "Are you using multiple AWS profiles?"
+
+- If you answer **yes**, it will list available profiles and let you choose one.
+- If you answer **no**, it proceeds using the default AWS credentials (from `aws configure`, environment variables, or IAM role).
+
+No extra configuration is required if you're already authenticated with default credentials.
+
+---
+
+## 2. Lambda Code Refactored into Two Files
+
+The Lambda function code has been modularized for clarity and maintainability:
+
+- **`lambda_function.py`**: The main Lambda handler triggered by API Gateway.
+- **`kubeconfig.py`**: A helper module that:
+  - Retrieves the Kubernetes authentication token using the AWS EKS API.
+  - Returns a valid `kubeconfig` structure for temporary access.
+
+This separation makes the code easier to read, test, and extend.
+➡️ It also helps you to focus on editing only the main Lambda logic, where you can use any Kubernetes API you want — such as interacting with pods, deployments, services, or other resources —without needing to modify or navigate the underlying authentication code.
 
